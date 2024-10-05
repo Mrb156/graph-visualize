@@ -7,7 +7,7 @@ class GlobalOptions(QObject):
         super().__init__()
         self.options = {
             "font_size": 12,
-            "node_size": 3000,
+            "node_size": 2000,
             "node_color": "white",
             "edgecolors": "black",
             "linewidths": 2,

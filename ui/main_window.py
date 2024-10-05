@@ -24,7 +24,7 @@ class MainWindow(QMainWindow):
             "nodes": [],
             "links": []
         }
-        self.options = GlobalOptions()
+        self.global_options = GlobalOptions()
 
         super(MainWindow, self).__init__()
         self.setWindowTitle("Gráf kezelő app")
@@ -82,8 +82,8 @@ class MainWindow(QMainWindow):
         right_side_panel = QVBoxLayout()
         canvas_layout = QVBoxLayout()
         
-        right_side_panel.addWidget(RightSidePanel())
-        self.canvas = Canvas(self, width=5, height=4, dpi=100, data=self.data)
+        right_side_panel.addWidget(RightSidePanel(self.global_options))
+        self.canvas = Canvas(self, width=5, height=4, dpi=100, data=self.data,optionsObject=self.global_options)
         canvas_layout.addWidget(self.canvas)
         self.show()
         layout.addLayout(canvas_layout)
