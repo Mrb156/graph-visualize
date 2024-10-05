@@ -8,6 +8,7 @@ from pathlib import Path
 import json
 
 from constants.icons import icons
+from globals.options import GlobalOptions
 from ui.toolbar_action import ToolbarAction
 from logic.actions import Actions
 from ui.canvas import Canvas
@@ -23,6 +24,7 @@ class MainWindow(QMainWindow):
             "nodes": [],
             "links": []
         }
+        self.options = GlobalOptions()
 
         super(MainWindow, self).__init__()
         self.setWindowTitle("Gráf kezelő app")

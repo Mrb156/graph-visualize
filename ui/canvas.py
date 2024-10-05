@@ -1,5 +1,7 @@
 import sys
 import matplotlib
+
+from globals.options import GlobalOptions
 matplotlib.use('QtAgg')
 import networkx as nx
 import matplotlib.pyplot as plt
@@ -20,22 +22,15 @@ class Canvas(FigureCanvasQTAgg):
         self.ax.axis("off")
         self.data = data
         self.plot_graph()
+    optionsObject = GlobalOptions()
 
     def plot_graph(self):
         """This method plots the graph."""
         self.ax.clear()  # Clear the previous graph
         G = nx.node_link_graph(self.data)
-        
+        options = self.optionsObject.get_all_option()
         # Define the layout for the graph
         pos = nx.spring_layout(G)
-        options = {
-            "font_size": 12,
-            "node_size": 3000,
-            "node_color": "white",
-            "edgecolors": "black",
-            "linewidths": 2,
-            "width": 2,
-        }
         nx.draw_networkx(G, pos, ax=self.ax, **options)
         self.draw()
 
