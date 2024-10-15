@@ -15,10 +15,19 @@ class Graph:
     def add_edge(self, node1, node2, **attrs):
         self.graph.add_edge(node1, node2, **attrs)
 
-    def from_json(self, json_data):
-        data = json.loads(json_data)
-        self.graph = nx.node_link_graph(data)
-        self.nodes = list(self.graph.nodes)
+    def delete_node(self, node):
+        if node in self.graph:
+            self.graph.remove_node(node)
+            self.nodes.remove(node)
+
+    def from_json(self, json_str):
+        data = json.loads(json_str)
+        self.graph.clear()
+        self.nodes.clear()
+        for node in data['nodes']:
+            self.add_node(node['id'], **node.get('attributes', {}))
+        for link in data['links']:
+            self.add_edge(link['source'], link['target'], **link.get('attributes', {}))
 
     def to_json(self):
         data = nx.node_link_data(self.graph)
@@ -29,10 +38,8 @@ class Graph:
         with open(file_path, 'w') as f:
             f.write(data)
 
-# Example usage:
-# g = Graph()
-# g.add_node(1)
-# g.add_node(2)
-# g.add_edge(1, 2)
-# print(g.to_json())
-# g.save_to_json_file('graph.json')
+    def has_edge(self, node1, node2):
+        return self.graph.has_edge(node1, node2)
+
+    def get_edge_weight(self, node1, node2):
+        return self.graph.get_edge_data(node1, node2).get('weight', '')
