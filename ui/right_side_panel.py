@@ -39,7 +39,7 @@ class RightSidePanel(QWidget):
 
         # Node colors
         self.node_color_label = QLabel("Node Colors", self)
-        self.node_color_button = QPushButton("Choose Color", self)
+        self.node_color_button = QPushButton("", self)
         self.node_color_button.setStyleSheet(f"background-color: {self.global_options.get_option('node_color')}")
         self.node_color_button.clicked.connect(self.choose_node_color)
 
@@ -47,13 +47,13 @@ class RightSidePanel(QWidget):
         grid_layout.addWidget(self.node_color_button, 2, 1)
 
         # Edge color
-        self.edge_color_label = QLabel("Edge Color", self)
-        self.edge_color_button = QPushButton("Choose Color", self)
-        self.edge_color_button.setStyleSheet(f"background-color: {self.global_options.get_option('edgecolors')}")
-        self.edge_color_button.clicked.connect(self.choose_edge_color)
+        self.node_edge_color_label = QLabel("Node edge Color", self)
+        self.node_edge_color_button = QPushButton("", self)
+        self.node_edge_color_button.setStyleSheet(f"background-color: {self.global_options.get_option('node_edge_color')}")
+        self.node_edge_color_button.clicked.connect(self.choose_node_edge_color)
 
-        grid_layout.addWidget(self.edge_color_label, 3, 0)
-        grid_layout.addWidget(self.edge_color_button, 3, 1)
+        grid_layout.addWidget(self.node_edge_color_label, 3, 0)
+        grid_layout.addWidget(self.node_edge_color_button, 3, 1)
 
         # Line widths
         self.line_width_label = QLabel("Line Widths", self)
@@ -75,6 +75,15 @@ class RightSidePanel(QWidget):
         grid_layout.addWidget(self.width_label, 5, 0)
         grid_layout.addWidget(self.width_spinbox, 5, 1)
 
+        # Edge colors
+        self.edge_color_label = QLabel("Edge Colors", self)
+        self.edge_color_button = QPushButton("", self)
+        self.edge_color_button.setStyleSheet(f"background-color: {self.global_options.get_option('edge_color')}")
+        self.edge_color_button.clicked.connect(self.choose_edge_color)
+
+        grid_layout.addWidget(self.edge_color_label, 6, 0)
+        grid_layout.addWidget(self.edge_color_button, 6, 1)
+
         # Add grid layout to the main layout
         main_layout.addLayout(grid_layout)
 
@@ -95,10 +104,16 @@ class RightSidePanel(QWidget):
             self.global_options.set_option("node_color", color.name())
             self.node_color_button.setStyleSheet(f"background-color: {color.name()}")
 
+    def choose_node_edge_color(self):
+        color = QColorDialog.getColor()
+        if color.isValid():
+            self.global_options.set_option("node_edge_color", color.name())
+            self.node_edge_color_button.setStyleSheet(f"background-color: {color.name()}")
+
     def choose_edge_color(self):
         color = QColorDialog.getColor()
         if color.isValid():
-            self.global_options.set_option("edgecolors", color.name())
+            self.global_options.set_option("edge_color", color.name())
             self.edge_color_button.setStyleSheet(f"background-color: {color.name()}")
 
     def update_line_width(self, value):

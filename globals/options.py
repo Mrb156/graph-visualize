@@ -9,9 +9,10 @@ class GlobalOptions(QObject):
             "font_size": 12,
             "node_size": 2000,
             "node_color": "white",
-            "edgecolors": "black",
+            "node_edge_color": "black",  # Corrected key
             "linewidths": 2,
             "width": 2,
+            "edge_color": "black",  # Added edge color option
         }
 
     def set_option(self, key, value):

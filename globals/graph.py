@@ -2,6 +2,7 @@ import networkx as nx
 import json
 from PyQt6.QtWidgets import QApplication, QWidget, QVBoxLayout, QTableWidget, QTableWidgetItem, QPushButton, QLineEdit, QHBoxLayout, QLabel
 import sys
+from PyQt6.QtWidgets import QFileDialog
 
 class Graph:
     def __init__(self):
@@ -19,6 +20,10 @@ class Graph:
         if node in self.graph:
             self.graph.remove_node(node)
             self.nodes.remove(node)
+
+    def update_node_attributes(self, node, **attrs):
+        if node in self.graph:
+            self.graph.nodes[node].update(attrs)
 
     def from_json(self, json_str):
         data = json.loads(json_str)
@@ -38,8 +43,19 @@ class Graph:
         with open(file_path, 'w') as f:
             f.write(data)
 
+    def save_as_file_dialog(self):
+        options = QFileDialog.Option(value=QFileDialog.Option.ShowDirsOnly)
+        file_path, _ = QFileDialog.getSaveFileName(None, "Save Graph As", "", "JSON Files (*.json);;All Files (*)", options=options)
+        if file_path:
+            self.save_to_json_file(file_path)
+
     def has_edge(self, node1, node2):
         return self.graph.has_edge(node1, node2)
 
     def get_edge_weight(self, node1, node2):
         return self.graph.get_edge_data(node1, node2).get('weight', '')
+
+# Example usage:
+# g = Graph()
+# g.add_node('A', color='red', size=10)
+# g.update_node_attributes('A', color='blue', shape='circle')
