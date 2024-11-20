@@ -1,7 +1,39 @@
 {
-    "directed": false,
-    "multigraph": false,
-    "graph": {},
-    "nodes": [],
-    "links": []
+    "nodes": [
+        {
+            "id": "M\u00e1ria",
+            "attributes": {
+                "name": {
+                    "value": "M\u00e1ria",
+                    "type": "String"
+                },
+                "age": {
+                    "value": "55",
+                    "type": "Integer"
+                }
+            }
+        },
+        {
+            "id": "P\u00e9ter",
+            "attributes": {
+                "name": {
+                    "value": "P\u00e9ter",
+                    "type": "String"
+                },
+                "age": {
+                    "value": "5",
+                    "type": "Integer"
+                }
+            }
+        }
+    ],
+    "links": [
+        {
+            "source": "M\u00e1ria",
+            "target": "P\u00e9ter",
+            "attributes": {
+                "weight": 10
+            }
+        }
+    ]
 }

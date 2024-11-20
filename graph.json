@@ -1,7 +1,18 @@
 {
-    "directed": false,
-    "multigraph": false,
-    "graph": {},
-    "nodes": [],
+    "nodes": [
+        {
+            "id": "M\u00e1ria",
+            "attributes": {
+                "name": {
+                    "value": "M\u00e1ria",
+                    "type": "String"
+                },
+                "age": {
+                    "value": "55",
+                    "type": "Integer"
+                }
+            }
+        }
+    ],
     "links": []
 }

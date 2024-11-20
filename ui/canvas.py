@@ -45,7 +45,7 @@ class Canvas(FigureCanvasQTAgg):
             return
         
         # Fetch options from GlobalOptions
-        options = self.optionsObject.get_all_option()
+        options = self.optionsObject.get_all_options()
         
         # Correct the key for edge colors
         if 'node_edge_color' in options:

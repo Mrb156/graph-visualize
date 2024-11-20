@@ -22,7 +22,7 @@ class GlobalOptions(QObject):
     def get_option(self, key, default=None):
         return self.options.get(key, default)
 
-    def get_all_option(self):
+    def get_all_options(self):
         return self.options
 
     def remove_option(self, key):
