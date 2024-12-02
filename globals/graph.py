@@ -13,17 +13,7 @@ class Graph:
         """Initialize an empty graph with NetworkX."""
         self.graph = nx.Graph()
         self.nodes = []  # Keep track of nodes in order of addition
-    #     self._observers = []  # List of observers for graph changes
 
-
-    # def add_observer(self, observer):
-    #     """Add an observer that will be notified of graph changes."""
-    #     self._observers.append(observer)
-
-    # def notify_observers(self):
-    #     """Notify all observers of a graph change."""
-    #     for observer in self._observers:
-    #         observer.update_view()
 
     def add_node(self, node, **attrs):
         """Add a node with attributes to the graph."""
@@ -111,6 +101,7 @@ class Graph:
 
     def to_dict(self):
         """Convert graph to dictionary format."""
+        print(self.graph.nodes)
         try:
             return {
                 'nodes': [{'id': node, 'attributes': dict(self.graph.nodes[node])} 
@@ -120,7 +111,14 @@ class Graph:
             }
         except Exception as e:
             raise Exception(f"Error converting to dictionary: {str(e)}")
-
+    def clear_graph(self):
+        """Clear the entire graph, removing all nodes and edges."""
+        try:
+            self.graph.clear()
+            self.nodes.clear()
+            print(self.graph.nodes)
+        except Exception as e:
+            raise Exception(f"Error clearing graph: {str(e)}")
     def to_json(self):
         """Convert graph to JSON string."""
         try:

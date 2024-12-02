@@ -1,0 +1,14 @@
+{
+    "nodes": [
+        {
+            "id": "gg",
+            "attributes": {
+                "g": {
+                    "value": "g",
+                    "type": "String"
+                }
+            }
+        }
+    ],
+    "links": []
+}

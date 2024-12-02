@@ -155,7 +155,7 @@ class MainWindow(QMainWindow):
             splitter.setStyleSheet(splitter_style)
 
         # Create main components
-        self.canvas = Canvas(self, width=5, height=4, dpi=100, graph=self.graph.graph, optionsObject=self.global_options)
+        self.canvas = Canvas(self, width=5, height=4, dpi=100, graph=self.graph, optionsObject=self.global_options)
         self.graph_widget = GraphWidget(self.graph, self)
         self.right_side_panel = RightSidePanel(self.global_options)
         self.node_options_panel = NodeOptionsPanel(self.graph, self.canvas)
@@ -217,10 +217,9 @@ class MainWindow(QMainWindow):
         dialog = UniquePropertyDialog(self)
         if dialog.exec() == QDialog.DialogCode.Accepted:
             attributes = dialog.get_attributes()
-            self.graph = Graph()
+            self.graph.clear_graph()
             self.saved_attributes = attributes  # Save the new attributes
             self.setup_main_layout()  # Re-setup the main layout
-            # print(self.graph.nodes)
 
     def closeApp(self):
         self.close()
@@ -338,7 +337,6 @@ class GraphWidget(QWidget):
                     attr_dict[attr] = {"value": value, "type": attr_type}
 
                 self.graph.add_node(node, **attr_dict)
-                # print(self.graph.nodes)
                 self.update_view_with_data()
                 self.updateTable()
 
