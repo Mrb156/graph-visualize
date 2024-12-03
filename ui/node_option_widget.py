@@ -70,14 +70,18 @@ class NodeOptionsPanel(QWidget):
             node_id_field = QLineEdit(self)
             self.grid_layout.addWidget(node_id_field, 0, 1)
 
-            node_id_field.setText(self.node_id)
+            node_id_field.setText(str(self.node_id))  # Convert to string
 
             # Store the Node ID field separately
             self.node_id_field = node_id_field
 
             # Populate the grid layout with the new node's attributes
             for row, attribute in enumerate(self.graph.get_node_attributes(node_name)):
-                current_value = self.graph.get_node_attribute(node_name, attribute).get("value", "")
+                attr_data = self.graph.get_node_attribute(node_name, attribute)
+                current_value = attr_data.get("value", "")
+                # Convert value to string, handling different types
+                if isinstance(current_value, (int, float)):
+                    current_value = str(current_value)
 
                 # Create a label for the attribute
                 label = QLabel(f"{attribute}:", self)
@@ -144,4 +148,3 @@ class NodeOptionsPanel(QWidget):
                 # Store the text field in the dictionary
                 self.attribute_fields[attribute] = text_field
             self.save_button.clicked.connect(self.save_edge_changes)
-            

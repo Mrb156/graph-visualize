@@ -1,36 +1,95 @@
 {
     "nodes": [
         {
-            "id": "M",
+            "id": "Node_1",
             "attributes": {
-                "name": {
-                    "value": "M\u00e1ria",
-                    "type": "String"
-                },
                 "age": {
-                    "value": "55",
-                    "type": "Integer"
+                    "value": 48,
+                    "type": "int"
+                },
+                "name": {
+                    "value": "68",
+                    "type": "string"
+                },
+                "star": {
+                    "value": 39.53,
+                    "type": "float"
                 }
             }
         },
         {
-            "id": "P",
+            "id": "Node_2",
             "attributes": {
-                "name": {
-                    "value": "P\u00e9ter",
-                    "type": "String"
-                },
                 "age": {
-                    "value": "5",
-                    "type": "Integer"
+                    "value": 87,
+                    "type": "int"
+                },
+                "name": {
+                    "value": "55",
+                    "type": "string"
+                },
+                "star": {
+                    "value": 8.13,
+                    "type": "float"
+                }
+            }
+        },
+        {
+            "id": "Node_3",
+            "attributes": {
+                "age": {
+                    "value": 53,
+                    "type": "int"
+                },
+                "name": {
+                    "value": "7",
+                    "type": "string"
+                },
+                "star": {
+                    "value": 75.85,
+                    "type": "float"
+                }
+            }
+        },
+        {
+            "id": "Node_4",
+            "attributes": {
+                "age": {
+                    "value": 100,
+                    "type": "int"
+                },
+                "name": {
+                    "value": "19",
+                    "type": "string"
+                },
+                "star": {
+                    "value": 94.22,
+                    "type": "float"
+                }
+            }
+        },
+        {
+            "id": "Node_5",
+            "attributes": {
+                "age": {
+                    "value": 34,
+                    "type": "int"
+                },
+                "name": {
+                    "value": "74",
+                    "type": "string"
+                },
+                "star": {
+                    "value": 89.72,
+                    "type": "float"
                 }
             }
         }
     ],
     "links": [
         {
-            "source": "M",
-            "target": "P",
+            "source": "Node_1",
+            "target": "Node_3",
             "attributes": {
                 "weight": 1
             }

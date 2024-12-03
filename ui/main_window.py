@@ -3,11 +3,13 @@ from PyQt6.QtCore import Qt, QPoint
 from PyQt6.QtWidgets import (
     QMainWindow, QApplication, QLabel, QSplitter, QToolBar, QStatusBar,
     QHBoxLayout, QWidget, QVBoxLayout, QFileDialog, QTableWidget,
-    QTableWidgetItem, QPushButton, QInputDialog, QMessageBox, QDialog,QMenu, QStyledItemDelegate, QLineEdit, QCheckBox
+    QTableWidgetItem, QPushButton, QInputDialog, QMessageBox, QDialog,QMenu, QStyledItemDelegate, QLineEdit, QCheckBox, QSpinBox, QFormLayout,
+    QComboBox
 )
 from PyQt6.QtGui import QAction, QIcon, QPalette, QColor, QIntValidator, QDoubleValidator
 from pathlib import Path
 import json
+import random
 
 from constants.icons import icons
 from globals.graph import Graph
@@ -77,6 +79,7 @@ class MainWindow(QMainWindow):
         }
         self.global_options = GlobalOptions()
         self.graph = Graph()
+        self.saved_attributes = {}  # Initialize saved_attributes
 
         self.setWindowTitle("Gráf kezelő app")
         self.setMinimumSize(1000, 700)
@@ -132,6 +135,7 @@ class MainWindow(QMainWindow):
         edit_menu = menu.addMenu("Edit")
         undo = QAction("Undo", self)
         rnd_graph = QAction("Random graph", self)
+        rnd_graph.triggered.connect(self.generate_random_graph)
         edit_menu.addAction(undo)
         edit_menu.addAction(rnd_graph)
         edit_menu.addSeparator()
@@ -244,6 +248,49 @@ class MainWindow(QMainWindow):
     def update_view_with_data(self):
         self.canvas.update_graph(self.graph.graph)
 
+    def generate_random_graph(self):
+        dialog = RandomGraphDialog(self)
+        if dialog.exec() == QDialog.DialogCode.Accepted:
+            values = dialog.get_values()
+            
+            # Update saved attributes
+            self.saved_attributes = values['attributes']
+            
+            # Clear existing graph
+            self.graph.clear_graph()
+            
+            # Generate random nodes
+            num_nodes = random.randint(values['min_nodes'], values['max_nodes'])
+            
+            # Add nodes with random attributes
+            for i in range(num_nodes):
+                node_id = f"Node_{i+1}"
+                attr_dict = {}
+                
+                for attr, attr_type in self.saved_attributes.items():
+                    if attr_type == "int":
+                        value = random.randint(1, 100)
+                    elif attr_type == "float":
+                        value = round(random.uniform(1.0, 100.0), 2)
+                    else:
+                        value = str(random.randint(1, 100))
+                    attr_dict[attr] = {"value": value, "type": attr_type}
+                
+                self.graph.add_node(node_id, **attr_dict)
+            
+            # Generate random edges
+            num_edges = random.randint(values['min_edges'], values['max_edges'])
+            nodes = list(self.graph.nodes)
+            
+            for _ in range(num_edges):
+                node1 = random.choice(nodes)
+                node2 = random.choice(nodes)
+                if node1 != node2 and not self.graph.has_edge(node1, node2):
+                    self.graph.add_edge(node1, node2, weight=1)
+            
+            # Update view
+            self.graph_widget.updateTable()
+            self.update_view_with_data()
 
 class CheckBoxDelegate(QStyledItemDelegate):
     def createEditor(self, parent, option, index):
@@ -417,3 +464,115 @@ class GraphWidget(QWidget):
 
     def update_view_with_data(self):
         self.main_window.update_view_with_data()
+
+class RandomGraphDialog(QDialog):
+    def __init__(self, parent=None, saved_attributes=None):
+        super().__init__(parent)
+        self.saved_attributes = saved_attributes or {}
+        self.attribute_widgets = {}
+        self.setWindowTitle("Generate Random Graph")
+        self.setup_ui()
+
+    def setup_ui(self):
+        layout = QVBoxLayout()
+        form_layout = QFormLayout()
+
+        # Node and Edge configuration group
+        graph_config = QWidget()
+        graph_layout = QFormLayout(graph_config)
+
+        # Node count range
+        self.min_nodes = QSpinBox()
+        self.max_nodes = QSpinBox()
+        self.min_nodes.setRange(1, 100)
+        self.max_nodes.setRange(1, 100)
+        self.min_nodes.setValue(3)
+        self.max_nodes.setValue(6)
+
+        # Edge count range
+        self.min_edges = QSpinBox()
+        self.max_edges = QSpinBox()
+        self.min_edges.setRange(0, 1000)
+        self.max_edges.setRange(0, 1000)
+        self.min_edges.setValue(2)
+        self.max_edges.setValue(5)
+
+        graph_layout.addRow("Minimum Nodes:", self.min_nodes)
+        graph_layout.addRow("Maximum Nodes:", self.max_nodes)
+        graph_layout.addRow("Minimum Edges:", self.min_edges)
+        graph_layout.addRow("Maximum Edges:", self.max_edges)
+
+        # Attributes section
+        attributes_widget = QWidget()
+        attributes_layout = QVBoxLayout(attributes_widget)
+        attributes_layout.setContentsMargins(0, 10, 0, 10)
+
+        # Add attribute button and list
+        add_attr_btn = QPushButton("Add Attribute")
+        add_attr_btn.clicked.connect(self.add_attribute)
+        attributes_layout.addWidget(add_attr_btn)
+
+        self.attributes_form = QFormLayout()
+        attributes_layout.addLayout(self.attributes_form)
+
+        # Add initial attribute field
+        self.add_attribute()
+
+        # Main layout assembly
+        layout.addWidget(graph_config)
+        layout.addWidget(attributes_widget)
+
+        # Buttons
+        buttons = QHBoxLayout()
+        generate_btn = QPushButton("Generate")
+        cancel_btn = QPushButton("Cancel")
+        generate_btn.clicked.connect(self.accept)
+        cancel_btn.clicked.connect(self.reject)
+        buttons.addWidget(generate_btn)
+        buttons.addWidget(cancel_btn)
+        layout.addLayout(buttons)
+
+        self.setLayout(layout)
+
+    def add_attribute(self):
+        attr_widget = QWidget()
+        attr_layout = QHBoxLayout(attr_widget)
+        attr_layout.setContentsMargins(0, 0, 0, 0)
+
+        name_input = QLineEdit()
+        type_combo = QComboBox()
+        type_combo.addItems(["int", "float", "string"])
+        delete_btn = QPushButton("×")
+        delete_btn.setFixedSize(20, 20)
+
+        attr_layout.addWidget(name_input)
+        attr_layout.addWidget(type_combo)
+        attr_layout.addWidget(delete_btn)
+
+        self.attributes_form.addRow(attr_widget)
+        self.attribute_widgets[attr_widget] = (name_input, type_combo)
+
+        delete_btn.clicked.connect(lambda: self.delete_attribute(attr_widget))
+
+    def delete_attribute(self, widget):
+        if len(self.attribute_widgets) > 1:  # Keep at least one attribute
+            self.attributes_form.removeRow(widget)
+            del self.attribute_widgets[widget]
+
+    def get_values(self):
+        # Get graph configuration values
+        values = {
+            'min_nodes': self.min_nodes.value(),
+            'max_nodes': self.max_nodes.value(),
+            'min_edges': self.min_edges.value(),
+            'max_edges': self.max_edges.value(),
+            'attributes': {}
+        }
+
+        # Get attribute configurations
+        for widget, (name_input, type_combo) in self.attribute_widgets.items():
+            attr_name = name_input.text().strip()
+            if attr_name:  # Only add if name is not empty
+                values['attributes'][attr_name] = type_combo.currentText()
+
+        return values

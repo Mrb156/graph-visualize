@@ -1,14 +1,74 @@
 {
     "nodes": [
         {
-            "id": "s",
+            "id": "Node_1",
             "attributes": {
                 "s": {
-                    "value": "s",
-                    "type": "String"
+                    "value": "",
+                    "type": "int"
+                }
+            }
+        },
+        {
+            "id": "Node_2",
+            "attributes": {
+                "s": {
+                    "value": "1",
+                    "type": "int"
+                }
+            }
+        },
+        {
+            "id": "Node_3",
+            "attributes": {
+                "s": {
+                    "value": "",
+                    "type": "int"
+                }
+            }
+        },
+        {
+            "id": "Node_4",
+            "attributes": {
+                "s": {
+                    "value": "",
+                    "type": "int"
+                }
+            }
+        },
+        {
+            "id": "Node_5",
+            "attributes": {
+                "s": {
+                    "value": "",
+                    "type": "int"
+                }
+            }
+        },
+        {
+            "id": "Node_6",
+            "attributes": {
+                "s": {
+                    "value": "",
+                    "type": "int"
                 }
             }
         }
     ],
-    "links": []
+    "links": [
+        {
+            "source": "Node_1",
+            "target": "Node_2",
+            "attributes": {
+                "weight": 1
+            }
+        },
+        {
+            "source": "Node_1",
+            "target": "Node_4",
+            "attributes": {
+                "weight": 1
+            }
+        }
+    ]
 }
