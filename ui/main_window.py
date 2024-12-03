@@ -1,5 +1,5 @@
 import sys
-from PyQt6.QtCore import Qt
+from PyQt6.QtCore import Qt, QPoint
 from PyQt6.QtWidgets import (
     QMainWindow, QApplication, QLabel, QSplitter, QToolBar, QStatusBar,
     QHBoxLayout, QWidget, QVBoxLayout, QFileDialog, QTableWidget,
@@ -244,24 +244,34 @@ class MainWindow(QMainWindow):
     def update_view_with_data(self):
         self.canvas.update_graph(self.graph.graph)
 
-class NumericDelegate(QStyledItemDelegate):
+
+class CheckBoxDelegate(QStyledItemDelegate):
     def createEditor(self, parent, option, index):
-        editor = QLineEdit(parent)
-        editor.setValidator(QDoubleValidator())  # For decimal numbers
-        return editor
-
-    def setEditorData(self, editor, index):
-        value = index.data(Qt.EditRole)
-        if value is not None:
-            editor.setText(str(value))
-
-    def setModelData(self, editor, model, index):
-        try:
-            value = float(editor.text())
-            model.setData(index, value, Qt.EditRole)
-        except ValueError:
-            model.setData(index, None, Qt.EditRole)
+        return None
     
+    def paint(self, painter, option, index):
+        checked = bool(index.data())
+        checkbox = QCheckBox()
+        checkbox.setChecked(checked)
+        
+        # Get checkbox size
+        checkbox_size = checkbox.sizeHint()
+        
+        # Calculate center position
+        x = option.rect.center().x() - (checkbox_size.width() // 2)
+        y = option.rect.center().y() - (checkbox_size.height() // 2)
+        
+        # Save state and setup painter
+        painter.save()
+        painter.setRenderHint(painter.RenderHint.Antialiasing)
+        
+        # Move to the calculated position and draw
+        painter.translate(x, y)
+        checkbox.resize(checkbox_size)
+        checkbox.render(painter, QPoint(0, 0))
+        
+        painter.restore()
+
 class GraphWidget(QWidget):
     def __init__(self, graph, main_window, parent=None):
         super().__init__(parent)
@@ -279,8 +289,8 @@ class GraphWidget(QWidget):
         self.layout = QVBoxLayout()
 
         self.table = QTableWidget(0, 0)
-        self.table.itemChanged.connect(self.handleItemChanged)
-        # self.table.setItemDelegate(NumericDelegate())
+        self.table.setItemDelegate(CheckBoxDelegate())
+        self.table.itemClicked.connect(self.handleItemClicked)
         self.layout.addWidget(self.table)
 
         self.addNodeButton = QPushButton('Add Node')
@@ -363,17 +373,15 @@ class GraphWidget(QWidget):
         for i in range(size):
             for j in range(size):
                 if i == j:
-                    item = QTableWidgetItem("0")
-                    item.setFlags(item.flags() & ~Qt.ItemFlag.ItemIsEditable)
+                    item = QTableWidgetItem()
+                    item.setFlags(item.flags() & ~Qt.ItemFlag.ItemIsEnabled)
+                    item.setData(Qt.ItemDataRole.DisplayRole, False)
                 else:
                     node1 = nodes[i]
                     node2 = nodes[j]
-                    if self.graph.has_edge(node1, node2):
-                        weight = self.graph.get_edge_weight(node1, node2)
-                        # Create the item directly with the text
-                        item = QTableWidgetItem(str(int(weight)))
-                    else:
-                        item = QTableWidgetItem("0")
+                    has_edge = self.graph.has_edge(node1, node2)
+                    item = QTableWidgetItem()
+                    item.setData(Qt.ItemDataRole.DisplayRole, has_edge)
                 self.table.setItem(i, j, item)
 
     def resetTable(self):
@@ -381,34 +389,30 @@ class GraphWidget(QWidget):
         self.table.setRowCount(0)
         self.table.setColumnCount(0)
 
-    def handleItemChanged(self, item):
+    def handleItemClicked(self, item):
         row = item.row()
         col = item.column()
-        text = item.text()
-
-        if not text.isdigit():
-            item.setText('')
+        if row == col:  # Ignore diagonal cells
             return
 
-        if row != col:
-            corresponding_item = self.table.item(col, row)
-            if corresponding_item is None:
-                corresponding_item = QTableWidgetItem()
-                self.table.setItem(col, row, corresponding_item)
-            corresponding_item.setText(text)
+        current_state = bool(item.data(Qt.ItemDataRole.DisplayRole))
+        new_state = not current_state
+        
+        # Update both cells (symmetric matrix)
+        item.setData(Qt.ItemDataRole.DisplayRole, new_state)
+        corresponding_item = self.table.item(col, row)
+        if corresponding_item:
+            corresponding_item.setData(Qt.ItemDataRole.DisplayRole, new_state)
+
+        # Update graph
         nodes = list(self.graph.nodes)
-        for i in range(self.table.rowCount()):
-            for j in range(self.table.columnCount()):
-                if i != j:
-                    weight_item = self.table.item(i, j)
-                    if weight_item and weight_item.text():
-                        node1 = nodes[i]
-                        node2 = nodes[j]
-                        if weight_item.text() == "0" or weight_item.text() == "":
-                            self.graph.delete_edge(node1, node2)
-                        else:
-                            weight = int(weight_item.text())
-                            self.graph.add_edge(node1, node2, weight=weight)
+        node1, node2 = nodes[row], nodes[col]
+        
+        if new_state:
+            self.graph.add_edge(node1, node2, weight=1)
+        else:
+            self.graph.delete_edge(node1, node2)
+        
         self.update_view_with_data()
 
     def update_view_with_data(self):
