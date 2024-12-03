@@ -1,10 +1,10 @@
 {
     "nodes": [
         {
-            "id": "gg",
+            "id": "s",
             "attributes": {
-                "g": {
-                    "value": "g",
+                "s": {
+                    "value": "s",
                     "type": "String"
                 }
             }

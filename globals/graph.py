@@ -71,9 +71,19 @@ class Graph:
                 raise ValueError(f"Node {node} not found in graph")
         except Exception as e:
             raise Exception(f"Error updating node attributes: {str(e)}")
-
+    def set_edge_attribute(self, node1, node2, attribute, value):
+        """Set the value of a specific attribute for an edge."""
+        print(self.graph.edges)
+        try:
+            if self.has_edge(node1, node2):
+                self.graph.edges[node1, node2][attribute] = value
+            else:
+                raise ValueError(f"Edge between {node1} and {node2} not found")
+        except Exception as e:
+            raise Exception(f"Error setting edge attribute: {str(e)}")
     def update_edge_attributes(self, node1, node2, **attrs):
         """Update attributes of an existing edge."""
+        print(self.graph.edges)
         try:
             if self.graph.has_edge(node1, node2):
                 nx.set_edge_attributes(self.graph, {(node1, node2): attrs})
@@ -101,7 +111,6 @@ class Graph:
 
     def to_dict(self):
         """Convert graph to dictionary format."""
-        print(self.graph.nodes)
         try:
             return {
                 'nodes': [{'id': node, 'attributes': dict(self.graph.nodes[node])} 
@@ -133,7 +142,22 @@ class Graph:
                 json.dump(self.to_dict(), f, indent=4)
         except Exception as e:
             raise Exception(f"Error saving to file: {str(e)}")
-
+    def get_edge_attributes(self, node1, node2):
+        """Get all attributes of an edge between two nodes."""
+        try:
+            if self.has_edge(node1, node2):
+                return dict(self.graph.edges[node1, node2])
+            raise ValueError(f"Edge between {node1} and {node2} not found")
+        except Exception as e:
+            raise Exception(f"Error getting edge attributes: {str(e)}")
+    def get_edge_attribute(self, node1, node2, attribute):
+        """Get the value of a specific attribute for an edge."""
+        try:
+            if self.has_edge(node1, node2):
+                return self.graph.edges[node1, node2].get(attribute, None)
+            raise ValueError(f"Edge between {node1} and {node2} not found")
+        except Exception as e:
+            raise Exception(f"Error getting edge attribute: {str(e)}")
     def save_as_file_dialog(self):
         """Open a file dialog to save the graph."""
         try:
@@ -200,11 +224,13 @@ class Graph:
         
     def set_node_id(self, node, new_id):
         """Get the ID of a node."""
+        print(self.graph.nodes)
         try:
             if node in self.graph:
                 self.nodes[self.nodes.index(node)] = new_id
                 # return node
-            raise ValueError(f"Node {node} not found in graph")
+            else:
+                raise ValueError(f"Node {node} not found in graph")
         except Exception as e:
             raise Exception(f"Error getting node ID: {str(e)}")
         

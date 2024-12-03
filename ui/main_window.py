@@ -3,7 +3,7 @@ from PyQt6.QtCore import Qt
 from PyQt6.QtWidgets import (
     QMainWindow, QApplication, QLabel, QSplitter, QToolBar, QStatusBar,
     QHBoxLayout, QWidget, QVBoxLayout, QFileDialog, QTableWidget,
-    QTableWidgetItem, QPushButton, QInputDialog, QMessageBox, QDialog,QMenu, QStyledItemDelegate, QLineEdit
+    QTableWidgetItem, QPushButton, QInputDialog, QMessageBox, QDialog,QMenu, QStyledItemDelegate, QLineEdit, QCheckBox
 )
 from PyQt6.QtGui import QAction, QIcon, QPalette, QColor, QIntValidator, QDoubleValidator
 from pathlib import Path
@@ -18,6 +18,7 @@ from ui.canvas import Canvas
 from ui.right_side_panel import RightSidePanel
 from ui.node_option_widget import NodeOptionsPanel
 from ui.unique_property_dialog import UniquePropertyDialog
+from ui.edge_option_widget import EdgeOptionWidget
 import networkx as nx
 
 class PanelContainer(QWidget):
@@ -183,6 +184,7 @@ class MainWindow(QMainWindow):
 
         # Connect signals
         self.canvas.node_selected.connect(self.node_options_panel.update_selected_node)
+        self.canvas.edge_selected.connect(self.node_options_panel.update_selected_edge)
 
         # Add view menu actions
         self.setup_view_menu()
