@@ -96,13 +96,9 @@ class MainWindow(QMainWindow):
         toolbar.setMovable(False)
 
         new_document = ToolbarAction(QIcon(icons["new_document"]), "New document", Actions.newDocumentAction, self)
-        zoom_in = ToolbarAction(QIcon(icons["zoom_in"]), "Zoom in", Actions.zoomInAction, self)
-        zoom_out = ToolbarAction(QIcon(icons["zoom_out"]), "Zoom out", Actions.zoomOutAction, self)
 
         toolbar.addAction(new_document)
         new_document.triggered.connect(self.new_file)
-        toolbar.addAction(zoom_in)
-        toolbar.addAction(zoom_out)
 
         self.setStatusBar(QStatusBar(self))
 
@@ -133,15 +129,12 @@ class MainWindow(QMainWindow):
 
         # Edit menu
         edit_menu = menu.addMenu("Edit")
-        undo = QAction("Undo", self)
         rnd_graph = QAction("Random graph", self)
         rnd_graph.triggered.connect(self.generate_random_graph)
-        edit_menu.addAction(undo)
         edit_menu.addAction(rnd_graph)
         edit_menu.addSeparator()
 
         # View menu (new)
-        view_menu = menu.addMenu("View")
         self.view_actions = {}
         
     def setup_main_layout(self):

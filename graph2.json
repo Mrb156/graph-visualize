@@ -93,6 +93,55 @@
             "attributes": {
                 "weight": 1
             }
+        },
+        {
+            "source": "Node_1",
+            "target": "Node_2",
+            "attributes": {
+                "weight": 1
+            }
+        },
+        {
+            "source": "Node_1",
+            "target": "Node_4",
+            "attributes": {
+                "weight": 1
+            }
+        },
+        {
+            "source": "Node_2",
+            "target": "Node_3",
+            "attributes": {
+                "weight": 1
+            }
+        },
+        {
+            "source": "Node_2",
+            "target": "Node_4",
+            "attributes": {
+                "weight": 1
+            }
+        },
+        {
+            "source": "Node_3",
+            "target": "Node_4",
+            "attributes": {
+                "weight": 1
+            }
+        },
+        {
+            "source": "Node_3",
+            "target": "Node_5",
+            "attributes": {
+                "weight": 1
+            }
+        },
+        {
+            "source": "Node_4",
+            "target": "Node_5",
+            "attributes": {
+                "weight": 1
+            }
         }
     ]
 }
